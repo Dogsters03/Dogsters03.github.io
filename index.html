@@ -1,75 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <title>Registration Form</title>
-  <link rel="stylesheet" href="style.css" />
-  <script defer src="index.js"></script>
+  <meta charset="UTF-8">
+  <title>Weekly Timetable</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="index.js"></script>
 </head>
+
 <body>
   <!--
     Author: Mona Määttänen
-    Date: 2025-11-03
+    Date: 2025-10-20
   -->
+
   <header class="site-header">
-    <h1>Registration Form</h1>
+    <h1>Weekly Timetable</h1>
   </header>
 
   <main class="content">
-    <section class="controls" aria-label="User Registration">
-      <h2>Register</h2>
-      <form id="registrationForm" novalidate>
-        <input type="hidden" id="timestamp" name="timestamp">
+    <!-- Top row split into two blocks -->
+    <div class="top-grid">
+      <!-- Student info (30%) -->
+      <section class="student-info" aria-label="Student information">
+        <h2 class="student-info-title">Information</h2>
+        <p><span class="student-name">Mona Määttänen</span></p>
+        <p><span class="student-group">NTIS24K</span></p>
+      </section>
 
-        <div class="form-row">
-          <label for="fullName">Full name:</label>
-          <input type="text" id="fullName" name="fullName" placeholder="e.g. Anna Example">
-          <span class="error" id="nameError"></span>
-        </div>
+      <!-- Controls (70%): add course + day marks -->
+      <section class="controls" aria-label="Add course row">
+        <h2 class="controls-title">Add Course</h2>
 
-        <div class="form-row">
-          <label for="email">Email:</label>
-          <input type="email" id="email" name="email" placeholder="e.g. anna@example.com">
-          <span class="error" id="emailError"></span>
-        </div>
+        <form id="addCourseForm">
+          <div class="form-row">
+            <label for="courseName">Course name</label>
+            <input id="courseName" name="courseName" type="text" required placeholder="e.g., Web Development Basics">
+          </div>
 
-        <div class="form-row">
-          <label for="phone">Phone:</label>
-          <input type="tel" id="phone" name="phone" placeholder="+358 40 1234567">
-          <span class="error" id="phoneError"></span>
-        </div>
+          <fieldset class="days-group">
+            <legend>Days (yes = &#9989;, no = &#10060;)</legend>
+             <label><input type="checkbox" name="day" value="Mon"> Mon</label>
+            <label><input type="checkbox" name="day" value="Tue"> Tue</label>
+             <label><input type="checkbox" name="day" value="Wed"> Wed</label>
+            <label><input type="checkbox" name="day" value="Thu"> Thu</label>
+             <label><input type="checkbox" name="day" value="Fri"> Fri</label>
+          </fieldset>
 
-        <div class="form-row">
-          <label for="birthdate">Birth date:</label>
-          <input type="date" id="birthdate" name="birthdate">
-          <span class="error" id="birthError"></span>
-        </div>
+          <div class="form-row">
+            <button id="addRowBtn" type="submit" class="btn">Add row</button>
+            <button id="clearBtn" type="reset" class="btn btn-secondary">Clear</button>
+          </div>
+        </form>
+      </section>
+    </div>
 
-        <div class="form-row">
-          <label>
-            <input type="checkbox" id="terms"> I accept the terms
-          </label>
-          <span class="error" id="termsError"></span>
-        </div>
-
-        <button type="submit" class="btn">Submit</button>
-      </form>
-    </section>
-
+    <!-- Table -->
     <div class="table-wrap">
-      <table id="dataTable" class="table">
+      <table class="table" id="timetable">
         <thead>
           <tr>
-            <th>Timestamp</th>
-            <th>Full Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Birth Date</th>
+            <th>Course</th>
+            <th>Mon</th>
+            <th>Tue</th>
+            <th>Wed</th>
+            <th>Thu</th>
+            <th>Fri</th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+        </tbody>
       </table>
     </div>
   </main>
+
 </body>
+
 </html>
