@@ -1,50 +1,98 @@
-// index.js
 // Author: Mona Määttänen
-// Date: 2025-10-20
-// Handles adding new course rows with day marks (✅/❌)
+// Date: 2025-11-03
 
 document.addEventListener("DOMContentLoaded", () => {
-  const CHECK = '✅';
-  const CROSS = '❌';
-  const dayOrder = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+  const form = document.getElementById("registrationForm");
+  const tbody = document.querySelector("#dataTable tbody");
+  const timestampInput = document.getElementById("timestamp");
 
-  const form = document.getElementById("addCourseForm");
-  const table = document.getElementById("timetable").querySelector("tbody");
-  const courseInput = document.getElementById("courseName");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
+    // Update hidden timestamp
+    timestampInput.value = new Date().toLocaleString();
 
-    const courseName = courseInput.value.trim();
-    if (!courseName) return;
+    clearErrors();
+    const isValid = validateForm();
 
-    // Collect checked days into a Set
-    const checkedDays = new Set(
-      Array.from(form.querySelectorAll('input[name="day"]:checked'))
-        .map((cb) => cb.value)
-    );
+    if (!isValid) return;
 
-    // Create new table row
+    // Collect values
     const row = document.createElement("tr");
-
-    // Course cell
-    const nameCell = document.createElement("td");
-    nameCell.textContent = courseName;
-    row.appendChild(nameCell);
-
-    // Day cells
-    dayOrder.forEach((day) => {
-      const cell = document.createElement("td");
-      cell.textContent = checkedDays.has(day) ? CHECK : CROSS;
-      cell.dataset.day = day;
-      cell.className = "day-cell";
-      row.appendChild(cell);
+    [
+      timestampInput.value,
+      form.fullName.value.trim(),
+      form.email.value.trim(),
+      form.phone.value.trim(),
+      form.birthdate.value
+    ].forEach(text => {
+      const td = document.createElement("td");
+      td.textContent = text;
+      row.appendChild(td);
     });
 
-    table.appendChild(row);
-
-    // Reset form and focus
+    tbody.appendChild(row);
     form.reset();
-    courseInput.focus();
   });
+
+  function validateForm() {
+    let valid = true;
+
+    const name = form.fullName.value.trim();
+    const email = form.email.value.trim();
+    const phone = form.phone.value.trim();
+    const birth = form.birthdate.value;
+    const terms = document.getElementById("terms").checked;
+
+    // Name: at least 2 words, each ≥2 chars
+    if (!/^[A-Za-zÀ-ÖØ-öø-ÿ]{2,}\s+[A-Za-zÀ-ÖØ-öø-ÿ]{2,}/.test(name)) {
+      showError("nameError", "Please enter your full name (first and last).");
+      valid = false;
+    }
+
+    // Email
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showError("emailError", "Enter a valid email address.");
+      valid = false;
+    }
+
+    // Phone (Finnish +358 or 0)
+    if (!/^(\+358|0)\s?\d{5,10}$/.test(phone)) {
+      showError("phoneError", "Enter a valid Finnish phone number (+358 or 0...).");
+      valid = false;
+    }
+
+    // Birth date: not in the future, min age 13
+    if (birth) {
+      const birthDate = new Date(birth);
+      const now = new Date();
+      const age = (now - birthDate) / (365.25 * 24 * 60 * 60 * 1000);
+      if (birthDate > now) {
+        showError("birthError", "Birth date cannot be in the future.");
+        valid = false;
+      } else if (age < 13) {
+        showError("birthError", "You must be at least 13 years old.");
+        valid = false;
+      }
+    } else {
+      showError("birthError", "Please select your birth date.");
+      valid = false;
+    }
+
+    // Terms
+    if (!terms) {
+      showError("termsError", "You must accept the terms to continue.");
+      valid = false;
+    }
+
+    return valid;
+  }
+
+  function showError(id, message) {
+    document.getElementById(id).textContent = message;
+  }
+
+  function clearErrors() {
+    document.querySelectorAll(".error").forEach(el => el.textContent = "");
+  }
 });
