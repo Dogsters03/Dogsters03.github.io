@@ -1,5 +1,5 @@
 // Author: Mona Määttänen
-// Date: 2025-11-03
+// Date: 2025-11-12
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("registrationForm");
@@ -25,7 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
       form.email.value.trim(),
       form.phone.value.trim(),
       form.birthdate.value
-      form.terms.checked ? "Yes" : "No"
     ].forEach(text => {
       const td = document.createElement("td");
       td.textContent = text;
